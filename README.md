@@ -1,3 +1,5 @@
+# Second part to [vod timestamper](https://github.com/samerbam/twitch-timestamper)
+
 ## Setup
 1. Clone this repo into a directory `git clone https://github.com/samerbam/twitchVodGameTypeParser`.
 2. `npm install`.
