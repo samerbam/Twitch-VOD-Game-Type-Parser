@@ -1,0 +1,18 @@
+{
+  "name": "twitchgamevodparser",
+  "version": "1.0.0",
+  "description": "A Node.js Sript which hosts a api endpoint which takes a twitch vod id and returns the games played and what time the game switched at.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Sam",
+  "license": "ISC",
+  "dependencies": {
+    "node-html-parser": "^5.1.0",
+    "puppeteer": "^13.0.0",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-adblocker": "^2.12.0",
+    "puppeteer-extra-plugin-stealth": "^2.9.0"
+  }
+}
