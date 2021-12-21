@@ -13,6 +13,7 @@ async function run(videoID) {
   const page = await browser.newPage();
 
   await page.goto('https://player.twitch.tv/?autoplay=false&parent=127.0.0.1&video=v' + videoID)
+  await page.setDefaultTimeout(5000)
 
 
     await page.evaluate(() => {
