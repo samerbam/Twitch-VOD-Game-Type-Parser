@@ -28,7 +28,13 @@ async function run(videoID) {
         waitUntil: ["networkidle2", "domcontentloaded"]
     })
 
-    await page.waitForSelector("div.chapter-select-button__chapters")
+    try {
+      await page.waitForSelector("div.chapter-select-button__chapters")
+    } catch (e) {
+      console.log(e);
+      return {'error': 'No Chapters'};
+    }
+    
 
     const bodyHandle = await page.$('div#chapter-select-popover-body');
     const html = await page.evaluate((body) => body.innerHTML, bodyHandle);
