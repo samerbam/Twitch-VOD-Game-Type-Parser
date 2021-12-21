@@ -32,6 +32,8 @@ async function run(videoID) {
       await page.waitForSelector("div.chapter-select-button__chapters")
     } catch (e) {
       console.log(e);
+      await page.close();
+      await browser.close();
       return null;
     }
     
@@ -80,6 +82,7 @@ async function run(videoID) {
     output['length'] = count
     if (DEBUG) {console.log(output)}
     
+    await page.close();
     await browser.close();
 
     if (DEBUG) {console.log(output)}
