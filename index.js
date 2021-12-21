@@ -32,7 +32,7 @@ async function run(videoID) {
       await page.waitForSelector("div.chapter-select-button__chapters")
     } catch (e) {
       console.log(e);
-      return {'error': 'No Chapters'};
+      return null;
     }
     
 
@@ -96,17 +96,22 @@ const server = http.createServer((req, res) => {
   const urlPath = req.url;
   if (DEBUG) {console.log(urlPath)}
 
-  res.writeHead(200, { "Content-Type": "application/json" });
 
   if (urlPath.includes('/twitch/') && isNumeric(urlPath.split('/')[2])) {
     run(urlPath.split('/')[2]).then(data => {
       if (DEBUG) {console.log(data)}
-      res.end(
-        JSON.stringify({
-          "videoID": urlPath.split('/')[2],
-          "data": data,
-        })
-      )
+      if (data != null) {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(
+          JSON.stringify({
+            "videoID": urlPath.split('/')[2],
+            "data": data,
+          })
+        )
+      } else {
+        res.writeHead(500)
+        res.end()
+      }
     })
   } else {
     res.end(
