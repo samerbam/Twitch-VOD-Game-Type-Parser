@@ -71,8 +71,21 @@ async function run(videoID) {
       }
 
       if (!(time.includes('left'))) {
-        hours = output[Math.max(count-1, 0)]['time'].split(hOrHs)[0].trim()
-        minutes = output[Math.max(count-1, 0)]['time'].split(hOrHs)[1].split(mOrMs)[0].trim()
+        hours = parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[0])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[0].trim())
+        minutes = parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[1])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[1].split(mOrMs)[0].trim())
+        // hours = output[Math.max(count-1, 0)]['time'].split(hOrHs)[0].trim()
+        // minutes = output[Math.max(count-1, 0)]['time'].split(hOrHs)[1].split(mOrMs)[0].trim()
+        
+        if (DEBUG) {
+          console.log('====')
+          console.log(hours)
+          console.log(minutes)
+          console.log(output[Math.max(count-1, 0)]['startTime'].split(":"))
+          console.log('new output:')
+          console.log(parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[0])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[0].trim()))
+          console.log(parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[1])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[1].split(mOrMs)[0].trim()))
+          console.log('===')
+        }
       }
       
       output[count]['startTime'] = `${hours}:${minutes}`
