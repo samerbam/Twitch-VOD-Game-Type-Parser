@@ -2,6 +2,8 @@ const puppeteer = require('puppeteer-extra')
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
 const HTMLParser = require('node-html-parser');
+const http = require("http");
+const twitch-m3u8 = require("twitch-m3u8"); //TODO: Test this feature on new /m3u8 endpoint
 
 puppeteer.use(StealthPlugin())
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
@@ -106,8 +108,6 @@ function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-const http = require("http");
-
 const server = http.createServer((req, res) => {
   const urlPath = req.url;
   if (DEBUG) {console.log(urlPath)}
@@ -128,6 +128,19 @@ const server = http.createServer((req, res) => {
         res.writeHead(500)
         res.end()
       }
+    })
+  } else if (urlPath.includes('/m3u8/') && isNumeric(urlPath.split('/')[2])) {
+    twitch.getVod(urlPath.split('/')[2]).then(data => {
+      res.writeHead(200, {"Content-Type": "application/json"});
+      res.end(
+        JSON.stringify({
+          "m3u8": data
+        })
+      )
+    }).catch(err => {
+      console.log(err)
+      res.writeHead(500)
+      res.end()
     })
   } else {
     res.end(
