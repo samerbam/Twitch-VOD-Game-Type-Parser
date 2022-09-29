@@ -3,7 +3,7 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const AdblockerPlugin = require('puppeteer-extra-plugin-adblocker')
 const HTMLParser = require('node-html-parser');
 const http = require("http");
-const twitch-m3u8 = require("twitch-m3u8"); //TODO: Test this feature on new /m3u8 endpoint
+const twitch_m3u8 = require("twitch-m3u8"); //TODO: Test this feature on new /m3u8 endpoint
 
 puppeteer.use(StealthPlugin())
 puppeteer.use(AdblockerPlugin({ blockTrackers: true }))
@@ -73,8 +73,15 @@ async function run(videoID) {
       }
 
       if (!(time.includes('left'))) {
-        hours = parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[0])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[0].trim())
-        minutes = parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[1])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[1].split(mOrMs)[0].trim())
+        if (output[Math.max(count-1, 0)]['time'].includes(hOrHs)) {
+          hours = parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[0])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[0].trim())
+          
+          if (output[Math.max(count-1, 0)]['time'].includes(mOrMs)) {
+            minutes = parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[1])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[1].split(mOrMs)[0].trim()) 
+          }
+        } else if (output[Math.max(count-1, 0)]['time'].includes(mOrMs)) {
+            minutes = parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[1]) + parseInt(output[Math.max(count-1, 0)]['time'].split(mOrMs)[0].trim())
+        }
         // hours = output[Math.max(count-1, 0)]['time'].split(hOrHs)[0].trim()
         // minutes = output[Math.max(count-1, 0)]['time'].split(hOrHs)[1].split(mOrMs)[0].trim()
         
@@ -84,8 +91,19 @@ async function run(videoID) {
           console.log(minutes)
           console.log(output[Math.max(count-1, 0)]['startTime'].split(":"))
           console.log('new output:')
-          console.log(parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[0])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[0].trim()))
-          console.log(parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[1])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[1].split(mOrMs)[0].trim()))
+
+          if (output[Math.max(count-1, 0)]['time'].includes(hOrHs)) {
+            console.log(parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[0])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[0].trim()))
+            
+            if (output[Math.max(count-1, 0)]['time'].includes(mOrMs)) {
+              console.log(parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[1])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[1].split(mOrMs)[0].trim()))
+            }
+          } else if (output[Math.max(count-1, 0)]['time'].includes(mOrMs)) {
+              console.log(parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[1]) + parseInt(output[Math.max(count-1, 0)]['time'].split(mOrMs)[0].trim()))
+          }
+
+          // console.log(parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[0])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[0].trim()))
+          // console.log(parseInt(output[Math.max(count-1, 0)]['startTime'].split(":")[1])+parseInt(output[Math.max(count-1, 0)]['time'].split(hOrHs)[1].split(mOrMs)[0].trim()))
           console.log('===')
         }
       }
@@ -130,7 +148,7 @@ const server = http.createServer((req, res) => {
       }
     })
   } else if (urlPath.includes('/m3u8/') && isNumeric(urlPath.split('/')[2])) {
-    twitch.getVod(urlPath.split('/')[2]).then(data => {
+    twitch_m3u8.getVod(urlPath.split('/')[2]).then(data => {
       res.writeHead(200, {"Content-Type": "application/json"});
       res.end(
         JSON.stringify({
